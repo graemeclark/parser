@@ -21,10 +21,15 @@ public abstract class AbstractLexer
   public abstract Symbol nextSymbol(); 
   
   
-  public boolean have(String s)
+  public Boolean have(String s)
   {
   	
-  	if (s.equals(nextSymbol().getType())) {
+  	int temp = charIndex;
+  	Symbol symbol = nextSymbol();
+  	//System.out.println(symbol);
+  	
+  	if (symbol != null && s.equals(symbol.getType())) {
+  		//charIndex = temp;
   		return true;
   	}
   	else {
@@ -35,8 +40,22 @@ public abstract class AbstractLexer
   
   
   
-  public void mustBe(String s)
+  public Symbol mustBe(String s)
   {
+  	
+  	Symbol symbol = nextSymbol();
+  	if (symbol == null) {
+  		error("END OF PROGRAM");
+  		return null;
+  	}
+  	else if (s.equals(symbol.getType())) {
+  		//symbol = nextSymbol();
+  		return symbol;
+  	}
+  	else {
+  		error("(" + symbol.getValue() + ")" + " found where " + s + " expected");
+  		return null;
+  	}
   	
   }
   
@@ -60,7 +79,7 @@ public abstract class AbstractLexer
 	{
 
 		System.out.println(msg);
-		System.exit(0);
+		//System.exit(0);
 		
 	}
 	
@@ -103,8 +122,7 @@ public abstract class AbstractLexer
 				break;				
 			}
 			else value = addChar(value, c);
-		}
-		
+		}		
 		return value;
 		
 	}
@@ -126,9 +144,8 @@ public abstract class AbstractLexer
   			charIndex--;
   			break;
   		}
-  	}
-  	
-  	return value.trim();
+  	}  	
+  	return value;
 		
 	}
   
@@ -152,8 +169,7 @@ public abstract class AbstractLexer
   			charIndex--;
   			break;
   		}
-  	}
-  	
+  	} 	
   	return value;
 		
 	} 

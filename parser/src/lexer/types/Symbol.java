@@ -49,6 +49,19 @@ public class Symbol
 		
 	}
 	
+	public String getValue()
+	{
+		
+		if (i != null)
+			return i.toString();
+		if (s != null)
+			return s;
+		if (b != null)
+			return b.toString();
+		else return ""; 
+		
+	}
+	
 	public String toString()
 	{
 		

@@ -3,6 +3,8 @@ package parser.types;
 import java.util.Map;
 import java.util.HashMap;
 
+import lexer.types.Symbol;
+
 public class SymbolTable
 {
 	
@@ -20,6 +22,18 @@ public class SymbolTable
 	{
 		
 		return table.get(key);
+		
+	}
+	
+	public Symbol lookup(Symbol symbol)
+	{
+		
+		if (table.containsKey(symbol.getValue())) {			
+			return symbol;	
+		}
+		else {
+			return null;
+		}
 		
 	}
 	

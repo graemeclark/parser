@@ -36,18 +36,19 @@ public class TrivLexer extends AbstractLexer
   		
   		else if (Character.isLetter(c)) {
   			symbolValue = identifier(c);
-  			System.out.println(symbolValue);
   			if (isBoolean(symbolValue)) {
     			Boolean value = Boolean.parseBoolean(symbolValue);
     			symbol = new Symbol(value);
+    			break;
   			}
   			if (isReserved(symbolValue)) {
   				symbol = new Symbol(symbolValue, symbolValue);
+  				break;
   			}
   			else {
   				symbol = new Symbol(symbolValue, "identifier");
+  				break;
   			}
-  			break;
   		}
   		
   		else if (Character.isDigit(c)) {
@@ -63,7 +64,7 @@ public class TrivLexer extends AbstractLexer
       }
   		
     }
- 
+    System.out.println(symbol);
     return symbol;
     
 	}
