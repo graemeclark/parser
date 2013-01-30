@@ -21,7 +21,7 @@ public abstract class AbstractParser
 		
 	}
 	
-	public abstract Symbol expression();
+	protected abstract Symbol expression();
 	
 	public abstract void parseProgram();
 

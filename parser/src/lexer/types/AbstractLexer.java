@@ -5,8 +5,8 @@ public abstract class AbstractLexer
 	
 	protected Integer      charIndex;
 	protected String       source;
-	protected String[]     reservedWords;
-	public Symbol       currentSymbol;
+	private   String[]     reservedWords;
+	private   Symbol       currentSymbol;
   
   public AbstractLexer(String s, String[] res)
   {
@@ -17,14 +17,21 @@ public abstract class AbstractLexer
     
   }
   
+    
+  protected abstract void nextSymbol();
   
   
-  public abstract void nextSymbol(); 
+  public void initialise()
+  {
+  	
+  	nextSymbol();
+  	
+  }
   
   
   public Boolean have(String s)
   {
-
+  	
   	if (currentSymbol != null && s.equals(currentSymbol.getType())) {
   		nextSymbol();
   		return true;
@@ -44,11 +51,25 @@ public abstract class AbstractLexer
   		error("END OF PROGRAM");
   	}
   	else if (s.equals(currentSymbol.getType())) {
-  		//nextSymbol();
+  		nextSymbol();
   	}
   	else {
-  		error("(" + currentSymbol.getValue() + ")" + " found where " + s + " expected");
+  		error("error: (" + currentSymbol.getValue() + ")" + " found where \"" + s + "\" expected.");
   	}
+  	
+  }
+  
+  public Symbol getCurrentSymbol()
+  {
+  	
+  	return currentSymbol;
+  	
+  }
+  
+  protected void setCurrentSymbol(Symbol symbol)
+  {
+  	
+  	currentSymbol = symbol;
   	
   }
   
@@ -72,7 +93,7 @@ public abstract class AbstractLexer
 	{
 
 		System.out.println(msg);
-		//System.exit(0);
+		System.exit(0);
 		
 	}
 	

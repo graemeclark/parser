@@ -17,7 +17,7 @@ public class TrivLexer extends AbstractLexer
   }
   
   @Override
-	public void nextSymbol()
+	protected void nextSymbol()
 	{
   	
   	Character c;
@@ -65,7 +65,7 @@ public class TrivLexer extends AbstractLexer
   		
     }
     
-    currentSymbol = symbol;
+    setCurrentSymbol(symbol);
     
 	}
 

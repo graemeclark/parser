@@ -16,10 +16,10 @@ public class TrivParser extends AbstractParser
 	}
 
 	@Override
-	public Symbol expression()
+	protected Symbol expression()
 	{
 		
-		Symbol sym = lex.currentSymbol;
+		Symbol sym = lex.getCurrentSymbol();
 		
 		if (lex.have("let")) {
 			letExpression();
@@ -44,18 +44,16 @@ public class TrivParser extends AbstractParser
 	private void letExpression()
 	{
 		
-		lex.mustBe("identifier");
-		Symbol variable = lex.currentSymbol;
-		lex.nextSymbol();
+		Symbol variable = lex.getCurrentSymbol();
 		
+		lex.mustBe("identifier");
 		lex.mustBe("=");
-		lex.nextSymbol();
+		
 		Symbol init = expression();
 		symbolTable.put(variable.getValue(), init.getValue());
 
 		lex.mustBe("in");
-		
-		lex.nextSymbol();
+
 		expression();
 		
 	}
@@ -64,7 +62,7 @@ public class TrivParser extends AbstractParser
 	public void parseProgram()
 	{
 		
-		lex.nextSymbol();
+		lex.initialise();
 		expression();
 		System.out.println(symbolTable);
 		System.out.println(codeVector);
