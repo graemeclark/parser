@@ -46,7 +46,7 @@ public class SymbolTable
 
       String key = name.toString();
       String value = table.get(name).toString();  
-      output = output + key + " - " + value + "\n";
+      output = output + key + " = " + value + "\n";
 
 
     }

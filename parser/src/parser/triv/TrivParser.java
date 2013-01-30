@@ -19,18 +19,13 @@ public class TrivParser extends AbstractParser
 	public Symbol expression()
 	{
 		
-		Symbol sym = null;
+		Symbol sym = lex.currentSymbol;
 		
 		if (lex.have("let")) {
-			//System.out.println("let");
-			//sym = lex.nextSymbol();
-			//System.out.println(sym);
 			letExpression();
 		}
 		
 		else if (lex.have("identifier")) {
-			System.out.println("identifier");
-			sym = lex.nextSymbol();
 			if (symbolTable.lookup(sym) != null) {
 				codeVector.add("stackLoad");
 				codeVector.add(sym.getValue());
@@ -38,26 +33,30 @@ public class TrivParser extends AbstractParser
 		}
 		
 		else if (lex.have("numericLiteral")) {
-			System.out.println("numericLiteral");
-			sym = lex.nextSymbol();
 			codeVector.add("loadInt");
 			codeVector.add(sym.getValue());
 		}
 		
-		//System.out.println(sym);
 		return sym;
 		
 	}
 	
 	private void letExpression()
 	{
-		System.out.println("LET");
+		
 		lex.mustBe("identifier");
-		System.out.println("YES");
+		Symbol variable = lex.currentSymbol;
+		lex.nextSymbol();
+		
 		lex.mustBe("=");
-		System.out.println("YES");
-		Symbol s = expression();
+		lex.nextSymbol();
+		Symbol init = expression();
+		symbolTable.put(variable.getValue(), init.getValue());
+
 		lex.mustBe("in");
+		
+		lex.nextSymbol();
+		expression();
 		
 	}
 
@@ -65,8 +64,10 @@ public class TrivParser extends AbstractParser
 	public void parseProgram()
 	{
 		
+		lex.nextSymbol();
 		expression();
-		System.out.println("YES");
+		System.out.println(symbolTable);
+		System.out.println(codeVector);
 		
 	}
 
