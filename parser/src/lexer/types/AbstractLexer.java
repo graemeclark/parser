@@ -54,7 +54,7 @@ public abstract class AbstractLexer
   		nextSymbol();
   	}
   	else {
-  		error("error: (" + currentSymbol.getValue() + ")" + " found where \"" + s + "\" expected.");
+  		error("error: \"" + currentSymbol.getValue() + "\"" + " found where \"" + s + "\" expected.");
   	}
   	
   }
@@ -158,7 +158,7 @@ public abstract class AbstractLexer
   			charIndex--;
   			break;
   		}
-  	}  	
+  	}
   	return value;
 		
 	}
@@ -194,8 +194,7 @@ public abstract class AbstractLexer
   	
   	return source.charAt(charIndex++);
   	
-  }
-  
+  }  
   
   
   protected String addChar(String s, Character c)

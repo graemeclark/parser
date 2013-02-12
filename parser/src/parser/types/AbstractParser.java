@@ -4,12 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import lexer.types.AbstractLexer;
+import lexer.types.AbstractRegexLexer;
 import lexer.types.Symbol;
 
 public abstract class AbstractParser
 {
 	
-	protected AbstractLexer lex;
+	//protected AbstractLexer lex;
+	protected AbstractRegexLexer lex;
 	protected SymbolTable symbolTable;
 	protected List<String> codeVector;
 	
