@@ -1,6 +1,6 @@
 package parser.triv;
 
-import lexer.triv.TrivLexer;
+//import lexer.triv.TrivLexer;
 import lexer.triv.TrivRegexLexer;
 import lexer.types.Symbol;
 import parser.types.AbstractParser;
@@ -22,7 +22,6 @@ public class TrivParser extends AbstractParser
 	{
 		
 		Symbol sym = lex.getCurrentSymbol();
-		System.out.println(sym);
 		
 		if (lex.have("let")) {
 			letExpression();
@@ -37,6 +36,11 @@ public class TrivParser extends AbstractParser
 		
 		else if (lex.have("numericLiteral")) {
 			codeVector.add("loadInt");
+			codeVector.add(sym.getValue());
+		}
+		
+		else if (lex.have("stringLiteral")) {
+			codeVector.add("loadString");
 			codeVector.add(sym.getValue());
 		}
 		

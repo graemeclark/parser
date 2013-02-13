@@ -7,7 +7,7 @@ public abstract class AbstractRegexLexer
 {
 	
 	protected Pattern      identifier, numeric, decimal, hex;
-	protected Matcher      matchId, matchNum, matchDec, matchHex;
+	protected Matcher      matchId, matchNum, matchDec, matchHex, matchDQuote, matchNewLine;
 	protected Integer      charIndex;
 	protected String       source;
 	private   String[]     reservedWords;
@@ -16,7 +16,7 @@ public abstract class AbstractRegexLexer
   public AbstractRegexLexer(String s, String[] res)
   {
 
-  	identifier = Pattern.compile("[a-zA-z0-9]+");
+  	identifier = Pattern.compile("[a-zA-Z][a-zA-Z0-9]+|[a-zA-Z]");
   	numeric    = Pattern.compile("\\d");
   	decimal    = Pattern.compile("(0|[1-9][0-9]*)");
   	hex        = Pattern.compile("(0x|0X)[a-fA-F0-9]+");
@@ -66,7 +66,7 @@ public abstract class AbstractRegexLexer
   		nextSymbol();
   	}
   	else {
-  		error("error: \"" + currentSymbol.getValue() + "\"" + " found where \"" + s + "\" expected.");
+  		error("error: [" + currentSymbol.getValue() + "]" + " found where [" + s + "] expected.");
   	}
   	
   }
@@ -88,7 +88,7 @@ public abstract class AbstractRegexLexer
   }
   
   
-  protected void strip(int index)
+  protected void slice(int index)
   {
   	
   	source = source.substring(index).trim();
@@ -126,12 +126,12 @@ public abstract class AbstractRegexLexer
 	{
 
 		switch(c) {		
-	  case '=' : strip(1); return c.toString();
+	  case '=' : slice(1); return c.toString();
 	  case '+' : return c.toString();
 	  case '*' : return c.toString();
 	  case '/' : return c.toString();
 	  case '-' : return c.toString();
-	  default  : return "lexical error - illegal character";
+	  default  : return "lexical error - illegal character: [" + c + "]";
 	  }
 		
 	}
@@ -150,17 +150,30 @@ public abstract class AbstractRegexLexer
 	protected String dQuote()
 	{
 		
-		String value = "";
-		value = addChar(value, c);
+		String value = "\"";
+		int end = -1;
+		slice(1);
 		
-		while (charIndex < source.length()) {
-			c = nextChar();
-			if (c == '"') {
-				value = addChar(value, c);
-				break;				
-			}
-			else value = addChar(value, c);
-		}		
+		if (matchDQuote.find()) {
+		  end = matchDQuote.end();
+		}
+		
+		if (end != -1) {
+		  value = value + source.substring(0, end);
+		  if (source.length() == end + 1) {
+			  source = "";
+		  }
+		
+		  else {
+		  	slice(end + 1);
+		  }
+		}
+		
+		matchNewLine = Pattern.compile("\n").matcher(value);
+		
+		if (matchNewLine.find() && matchNewLine.start() != -1) {
+			error("lexical error - string extends over line break");
+		}
 		return value;
 		
 	}
@@ -172,7 +185,7 @@ public abstract class AbstractRegexLexer
   	
   	String value = "";
   	value = matchId.group(0);
-  	strip(matchId.end());
+  	slice(matchId.end());
   	return value;
 		
 	}
@@ -184,32 +197,19 @@ public abstract class AbstractRegexLexer
   	
   	String value = "";
   	value = matchNum.group(0);
-  	strip(matchNum.end());
+  	slice(matchNum.end());
   	return Integer.parseInt(value);
 		
 	} 
   
   
-  protected Character nextChar()
-  {
-  	
-  	return source.charAt(charIndex++);
-  	
-  }  
-  
-  
-  protected String addChar(String s, Character c)
-  {
-
-  	return s + c;
-  	
-  }
   
   protected void updateMatchers()
   {
   	
-  	matchId  = identifier.matcher(source);
-  	matchNum = numeric.matcher(source);
+  	matchId      = identifier.matcher(source);
+  	matchNum     = numeric.matcher(source);
+  	matchDQuote  = Pattern.compile("\"").matcher(source);
   	
   }
 

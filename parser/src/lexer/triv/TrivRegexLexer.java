@@ -47,17 +47,19 @@ public class TrivRegexLexer extends AbstractRegexLexer
   			}
   		}
     	
-    	else if (matchNum.find(0) && matchId.start() == 0) {
+    	else if (matchNum.find(0) && matchNum.start() == 0) {
   			symbol = new Symbol(integer());
+    		break;
+  		}
+    	
+    	else if (matchDQuote.find(0) && matchDQuote.start() == 0) {
+  			symbol = new Symbol(dQuote(), "stringLiteral");
     		break;
   		}
   		
   		else {
   			c = source.charAt(0);
-  			switch(c) {
-  			  case '"' : symbol = new Symbol(dQuote(), "stringLiteral");
-  		    default  : symbol = new Symbol(punctuator(c), c.toString());
-  		  }
+  		  symbol = new Symbol(punctuator(c), c.toString());
   			break;
   		}
   		
