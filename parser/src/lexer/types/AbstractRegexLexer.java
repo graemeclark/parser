@@ -8,7 +8,6 @@ public abstract class AbstractRegexLexer
 	
 	protected Pattern      identifier, numeric, decimal, hex;
 	protected Matcher      matchId, matchNum, matchDec, matchHex, matchDQuote, matchNewLine;
-	protected Integer      charIndex;
 	protected String       source;
 	private   String[]     reservedWords;
 	private   Symbol       currentSymbol;
@@ -21,7 +20,6 @@ public abstract class AbstractRegexLexer
   	decimal    = Pattern.compile("(0|[1-9][0-9]*)");
   	hex        = Pattern.compile("(0x|0X)[a-fA-F0-9]+");
   	
-  	charIndex       = 0;
   	source          = s;
   	reservedWords   = res;
   	
