@@ -1,24 +1,39 @@
-package parser.triv;
+package parser.types;
 
-//import lexer.triv.TrivLexer;
+import java.util.ArrayList;
+import java.util.List;
+
 import lexer.triv.Lexer;
+import lexer.types.AbstractRegexLexer;
 import lexer.types.Symbol;
-import parser.types.AbstractParser;
 
-public class TrivParser extends AbstractParser
+public class TRIVParserStrategy implements ParserStrategy
 {
 	
-	public TrivParser(String source)
+	protected AbstractRegexLexer lex;
+	protected SymbolTable symbolTable;
+	protected List<String> codeVector;
+	
+	public TRIVParserStrategy()
 	{
 		
-		super();
-		//lex = new TrivLexer(source);
-		lex = new Lexer(source);
+		symbolTable = new SymbolTable();
+		codeVector = new ArrayList<String>();
 		
 	}
 
-	@Override
-	protected Symbol expression()
+	public void parseProgram(String source)
+	{
+		
+		lex = new Lexer(source);
+		lex.initialise();
+		expression();
+		System.out.println(symbolTable);
+		System.out.println(codeVector);
+		
+	}
+
+	public Symbol expression()
 	{
 		
 		Symbol sym = lex.getCurrentSymbol();
@@ -62,17 +77,6 @@ public class TrivParser extends AbstractParser
 		lex.mustBe("in");
 
 		expression();
-		
-	}
-
-	@Override
-	public void parseProgram()
-	{
-		
-		lex.initialise();
-		expression();
-		System.out.println(symbolTable);
-		System.out.println(codeVector);
 		
 	}
 

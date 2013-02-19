@@ -1,7 +1,6 @@
 package driver;
 
-import parser.triv.TrivParser;
-import parser.types.AbstractParser;
+import parser.types.TRIVParserStrategy;
 
 public class Main
 {
@@ -11,8 +10,10 @@ public class Main
     
     String source = "let a = \"str\" in let b = 7 in";
     
-    AbstractParser parser = new TrivParser(source);
-    parser.parseProgram();
+    Compiler compiler = new Compiler();
+    compiler.setParserStrategy(new TRIVParserStrategy());
+
+    compiler.compile(source);
 
   }
 

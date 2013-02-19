@@ -4,12 +4,12 @@ import lexer.types.AbstractRegexLexer;
 import lexer.types.Symbol;
 
 
-public class TrivRegexLexer extends AbstractRegexLexer
+public class Lexer extends AbstractRegexLexer
 {
 
 	private static String[] res = { "let", "in" };
 	
-  public TrivRegexLexer(String source)
+  public Lexer(String source)
   {
 
     super(source, res);
