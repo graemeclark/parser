@@ -1,6 +1,5 @@
-package lexer.triv;
+package x.old;
 
-import lexer.types.AbstractLexer;
 import lexer.types.Symbol;
 
 

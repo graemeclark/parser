@@ -1,16 +1,18 @@
-package parser.types;
+package parser.triv;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import lexer.triv.Lexer;
-import lexer.types.AbstractRegexLexer;
+import parser.types.ParserStrategy;
+import parser.types.SymbolTable;
+
+import lexer.types.LexerStrategy;
 import lexer.types.Symbol;
 
 public class TRIVParserStrategy implements ParserStrategy
 {
 	
-	protected AbstractRegexLexer lex;
+	protected LexerStrategy lex;
 	protected SymbolTable symbolTable;
 	protected List<String> codeVector;
 	
@@ -22,11 +24,12 @@ public class TRIVParserStrategy implements ParserStrategy
 		
 	}
 
-	public void parseProgram(String source)
+	public void parse(LexerStrategy l, String source)
 	{
+
 		
-		lex = new Lexer(source);
-		lex.initialise();
+		lex = l;
+		lex.initialise(source);
 		expression();
 		System.out.println(symbolTable);
 		System.out.println(codeVector);

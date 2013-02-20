@@ -1,7 +1,9 @@
-package parser.types;
+package x.old;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import parser.types.SymbolTable;
 
 //import lexer.types.AbstractLexer;
 import lexer.types.AbstractRegexLexer;

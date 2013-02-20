@@ -1,4 +1,4 @@
-package lexer.triv;
+package x.old;
 
 import lexer.types.AbstractRegexLexer;
 import lexer.types.Symbol;

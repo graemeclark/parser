@@ -1,39 +1,77 @@
-package lexer.types;
+package lexer.triv;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import lexer.types.LexerStrategy;
+import lexer.types.PatternStrategy;
+import lexer.types.Symbol;
 
-public abstract class AbstractRegexLexer
+public class TRIVLexerStrategy implements LexerStrategy
 {
+	private static String[] reservedWords = { "let", "in" };
 	
-	protected Pattern      identifier, numeric, decimal, hex;
-	protected Matcher      matchId, matchNum, matchDec, matchHex, matchDQuote, matchNewLine;
-	protected String       source;
-	private   String[]     reservedWords;
-	private   Symbol       currentSymbol;
+	protected PatternStrategy patternStrategy;
+	protected String          source;
+	private   Symbol          currentSymbol;
   
-  public AbstractRegexLexer(String s, String[] res)
-  {
+  @Override
+	public void nextSymbol()
+	{
 
-  	identifier = Pattern.compile("[a-zA-Z][a-zA-Z0-9]+|[a-zA-Z]");
-  	numeric    = Pattern.compile("\\d");
-  	decimal    = Pattern.compile("(0|[1-9][0-9]*)");
-  	hex        = Pattern.compile("(0x|0X)[a-fA-F0-9]+");
-  	
-  	source          = s;
-  	reservedWords   = res;
-  	
-  	updateMatchers();
+  	Character c;
+  	String symbolValue = "";
+  	Symbol symbol = null;    	
+    symbolValue = "";
     
+    if (source.length() > 0) {
+    	    	  		
+    	if (patternStrategy.hasId()) {
+    		
+  	  	symbolValue = identifier();
+  			
+  			if (isBoolean(symbolValue)) {
+    			Boolean value = Boolean.parseBoolean(symbolValue);
+    			symbol = new Symbol(value);
+  			}
+  			
+  			if (isReserved(symbolValue)) {
+  				symbol = new Symbol(symbolValue, symbolValue);
+  			}
+  			
+  			else {
+  				symbol = new Symbol(symbolValue, "identifier");
+  			}
+  			
+  		}
+    	
+    	else if (patternStrategy.hasNum()) {
+  			symbol = new Symbol(integer());
+  		}
+    	
+    	else if (patternStrategy.hasDQuote()) {
+  			symbol = new Symbol(dQuote(), "stringLiteral");
+  		}
+  		
+  		else {
+  			c = source.charAt(0);
+  		  symbol = new Symbol(punctuator(c), c.toString());
+  		}
+    }
+    System.out.println(symbol);
+    setCurrentSymbol(symbol);
+	}
+    
+  public void setPatternStrategy(PatternStrategy p)
+  {
+  	
+  	this.patternStrategy = p;
+  	
   }
   
-    
-  protected abstract void nextSymbol();
   
-  
-  public void initialise()
+  public void initialise(String s)
   {
   	
+  	source = s;
+  	patternStrategy.setMatchers(source);
   	nextSymbol();
   	
   }
@@ -78,7 +116,7 @@ public abstract class AbstractRegexLexer
   }
   
   
-  protected void setCurrentSymbol(Symbol symbol)
+  public void setCurrentSymbol(Symbol symbol)
   {
   	
   	currentSymbol = symbol;
@@ -90,7 +128,7 @@ public abstract class AbstractRegexLexer
   {
   	
   	source = source.substring(index).trim();
-  	updateMatchers();
+  	patternStrategy.setMatchers(source);
   	
   }
   
@@ -120,7 +158,7 @@ public abstract class AbstractRegexLexer
 	}
 	
 	
-	protected String punctuator(Character c)
+	public String punctuator(Character c)
 	{
 
 		switch(c) {		
@@ -145,15 +183,14 @@ public abstract class AbstractRegexLexer
 	
 	
 	
-	protected String dQuote()
+	public String dQuote()
 	{
 		
 		String value = "\"";
 		int end = -1;
 		slice(1);
-		
-		if (matchDQuote.find()) {
-		  end = matchDQuote.end();
+    if (patternStrategy.findDQuote()) {
+		  end = patternStrategy.closingDQuoteIndex();
 		}
 		
 		if (end != -1) {
@@ -167,9 +204,7 @@ public abstract class AbstractRegexLexer
 		  }
 		}
 		
-		matchNewLine = Pattern.compile("\n").matcher(value);
-		
-		if (matchNewLine.find() && matchNewLine.start() != -1) {
+		if (patternStrategy.hasNewLine()) {
 			error("lexical error - string extends over line break");
 		}
 		return value;
@@ -178,37 +213,26 @@ public abstract class AbstractRegexLexer
 	
 	
   
-  protected String identifier()
+  public String identifier()
 	{
   	
   	String value = "";
-  	value = matchId.group(0);
-  	slice(matchId.end());
+  	value = patternStrategy.matchingId();
+  	slice(patternStrategy.idEnd());
   	return value;
 		
 	}
   
   
   
-  protected Integer integer()
+  public Integer integer()
 	{
   	
   	String value = "";
-  	value = matchNum.group(0);
-  	slice(matchNum.end());
+  	value = patternStrategy.matchingNum();
+  	slice(patternStrategy.numEnd());
   	return Integer.parseInt(value);
 		
 	} 
-  
-  
-  
-  protected void updateMatchers()
-  {
-  	
-  	matchId      = identifier.matcher(source);
-  	matchNum     = numeric.matcher(source);
-  	matchDQuote  = Pattern.compile("\"").matcher(source);
-  	
-  }
 
 }

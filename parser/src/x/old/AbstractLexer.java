@@ -1,4 +1,6 @@
-package lexer.types;
+package x.old;
+
+import lexer.types.Symbol;
 
 public abstract class AbstractLexer
 {

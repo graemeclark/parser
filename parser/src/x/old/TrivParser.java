@@ -1,9 +1,7 @@
-package parser.triv;
+package x.old;
 
 //import lexer.triv.TrivLexer;
-import lexer.triv.Lexer;
 import lexer.types.Symbol;
-import parser.types.AbstractParser;
 
 public class TrivParser extends AbstractParser
 {
